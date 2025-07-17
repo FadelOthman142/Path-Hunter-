@@ -65,7 +65,7 @@ pip install -r requirements.txt
 
 * Python **3.9+**
 * Internet access to your target(s)
-* Wordlists (included: `common.txt`, `large.txt`, `logger.txt`)
+* Wordlists (included: `common.txt`, `medium.txt`, `large.txt`)
 
 Install deps manually:
 
@@ -92,7 +92,7 @@ python main.py https://target.tld --mode balanced
 Stealth mode w/ slower pacing & logger wordlist:
 
 ```bash
-python main.py https://target.tld --mode stealth --delay 1.5 --threads 5
+python main.py https://target.tld --profile stealth --mode stealth --delay 1.5 --threads 5
 ```
 
 Custom wordlist overrides mode:
@@ -149,8 +149,8 @@ Built-in mapping used in `main.py`:
 | Mode       | Wordlist               | Intended Use                             |
 | ---------- | ---------------------- | ---------------------------------------- |
 | `fast`     | `wordlists/common.txt` | Quick recon / triage                     |
-| `balanced` | `wordlists/large.txt`  | Deeper target coverage                   |
-| `stealth`  | `wordlists/logger.txt` | Small, low-noise set for fragile targets |
+| `balanced` | `wordlists/medium.txt`  | Deeper target coverage                   |
+| `stealth`  | `wordlists/large.txt` | Small, low-noise set for fragile targets |
 
 ---
 
@@ -273,8 +273,8 @@ pathhunter/
 │   └── logger.py            # Minimal logger helpers
 ├── wordlists/
 │   ├── common.txt           # Fast list
-│   ├── large.txt            # Balanced/full list
-│   └── logger.txt           # Small/stealth list
+│   ├── medium.txt            # Balanced/full list
+│   └── large.txt           # Big/stealthy list
 ├── requirements.txt
 ├── LICENSE
 └── README.md
