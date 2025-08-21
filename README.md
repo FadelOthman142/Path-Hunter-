@@ -1,205 +1,220 @@
-# PathHunter
+# 🕵️ PathHunter
 
-![Python](https://img.shields.io/badge/Python-3.9%2B-blue.svg)
-![Status](https://img.shields.io/badge/status-beta-orange.svg)
-![License: MIT](https://img.shields.io/badge/License-MIT-green.svg)
-![PRs Welcome](https://img.shields.io/badge/PRs-welcome-brightgreen.svg)
-![Made With Rich](https://img.shields.io/badge/made%20with-Rich-6f42c1.svg)
+**Advanced Web Content Discovery Tool**
 
-> **PathHunter** is an advanced, Feroxbuster-inspired **web content discovery tool** for penetration testers, bug bounty hunters, and security engineers. It aggressively (or stealthily—your call) fuzzes directories & files, detects interesting responses, attempts simple WAF / auth bypass tricks, and displays everything in a **live-updating Rich terminal UI**.
+PathHunter is a Feroxbuster-inspired web content discovery tool for
+penetration testers, bug bounty hunters, and security engineers.\
+It aggressively (or stealthily---your call) fuzzes directories & files,
+detects interesting responses, attempts simple WAF/auth bypass tricks,
+and displays everything in a live-updating **Rich-powered TUI**.
 
----
+------------------------------------------------------------------------
 
 ## ✨ Highlights
 
-* ⚡ **Multi-threaded scanning** for speed
-* 🎯 **Scan modes** that auto-pick wordlists: *fast*, *balanced*, *stealth*
-* 🧠 **Regex include / exclude filters** (content-aware)
-* 🔁 **Recursive directory discovery** (optional)
-* 🛡 **Basic 403/401 bypass attempts** (header & path tricks)
-* 🖥 **Feroxbuster-like Rich TUI**: live progress bar + result table
-* 📤 **Export results** to JSON or CSV
-* 🔌 (Planned) Proxy routing, rate shaping per-domain, resume support
+-   ⚡ **Multi-threaded scanning** for speed\
+-   🎯 **Scan modes** with auto-selected wordlists: fast, balanced,
+    stealth\
+-   🧠 **Regex include/exclude filters** (content-aware)\
+-   🔁 **Recursive directory discovery** (optional)\
+-   🛡 **Basic 403/401 bypass attempts** (headers & path tricks)\
+-   🖥 **Feroxbuster-like Rich TUI** with live progress bar + results
+    table\
+-   📤 **Export results** to JSON or CSV\
+-   🔌 *(Planned)* Proxy routing, rate shaping per-domain, resume
+    support
 
----
+------------------------------------------------------------------------
 
 ## 📸 Demo
 
-> *Coming soon.* Drop a GIF or screenshot of PathHunter running in your terminal here for instant credibility.
+Coming soon -- a GIF or screenshot of PathHunter running in your
+terminal.
 
-```
-# placeholder preview (replace with real image)
+``` bash
 $ python main.py https://target.tld --mode fast
 ```
 
-You can capture a terminal session with **asciinema**:
+👉 Capture with asciinema:
 
-```bash
+``` bash
 asciinema rec demo.cast
 python main.py https://target.tld --mode fast
-
 ```
 
----
+------------------------------------------------------------------------
 
 ## 📦 Installation
 
-```bash
+``` bash
 git clone https://github.com/<YOUR_GITHUB_USERNAME>/pathhunter.git
 cd pathhunter
 pip install -r requirements.txt
 ```
 
-**Recommended:** Use a virtual environment.
+Recommended: use a virtual environment.
 
-```bash
+``` bash
 python -m venv .venv
 source .venv/bin/activate   # Linux/macOS
-.venv\Scripts\activate     # Windows PowerShell
+.venv\Scriptsctivate     # Windows PowerShell
 pip install -r requirements.txt
 ```
 
----
+------------------------------------------------------------------------
 
 ## 🔧 Requirements
 
-* Python **3.9+**
-* Internet access to your target(s)
-* Wordlists (included: `common.txt`, `medium.txt`, `large.txt`)
+-   Python 3.9+\
+-   Internet access to your target(s)\
+-   Wordlists (included: `common.txt`, `medium.txt`, `large.txt`)
 
 Install deps manually:
 
-```bash
+``` bash
 pip install requests rich urllib3
 ```
 
----
+------------------------------------------------------------------------
 
 ## 🚀 Quick Start
 
-Fast scan using built-in common wordlist:
+**Fast scan (built-in common wordlist):**
 
-```bash
+``` bash
 python main.py https://target.tld --mode fast
 ```
 
-Balanced scan (default):
+**Balanced scan (default):**
 
-```bash
+``` bash
 python main.py https://target.tld --mode balanced
 ```
 
-Stealth mode w/ slower pacing & logger wordlist:
+**Stealth scan (low-noise):**
 
-```bash
+``` bash
 python main.py https://target.tld --profile stealth --mode stealth --delay 1.5 --threads 5
 ```
 
-Custom wordlist overrides mode:
+**Custom wordlist:**
 
-```bash
+``` bash
 python main.py https://target.tld -w /path/to/custom.txt
 ```
 
-Exclude responses containing the string `logout`:
+**Exclude responses containing `logout`:**
 
-```bash
+``` bash
 python main.py https://target.tld --exclude-regex logout
 ```
 
----
+------------------------------------------------------------------------
 
 ## 🧭 Command-Line Usage
 
-```
+``` bash
 usage: main.py [-h] [-w WORDLIST] [-t THREADS] [--delay DELAY]
-              [--profile {stealth,balanced,aggressive}]
-              [--recursion] [--include-regex INCLUDE_REGEX]
-              [--exclude-regex EXCLUDE_REGEX] [--mode {fast,balanced,stealth}]
-              url
+               [--profile {stealth,balanced,aggressive}]
+               [--recursion] [--include-regex INCLUDE_REGEX]
+               [--exclude-regex EXCLUDE_REGEX] [--mode {fast,balanced,stealth}]
+               url
 ```
 
 ### Positional Argument
 
-| Arg   | Description                                    |
-| ----- | ---------------------------------------------- |
-| `url` | Target base URL (e.g., `https://example.com/`) |
+  Arg     Description
+  ------- ----------------------------------------------
+  `url`   Target base URL (e.g., https://example.com/)
 
 ### Options
 
-| Flag               | Description                                             | Default        |
-| ------------------ | ------------------------------------------------------- | -------------- |
-| `-w`, `--wordlist` | Path to custom wordlist (overrides `--mode`)            | *auto by mode* |
-| `-t`, `--threads`  | Worker threads                                          | `30`           |
-| `--delay`          | Delay (seconds) between requests baseline               | `0.1`          |
-| `--profile`        | Traffic behavior: `stealth`, `balanced`, `aggressive`   | `balanced`     |
-| `--recursion`      | Enable recursive scanning into found dirs               | `False`        |
-| `--include-regex`  | Only accept responses whose **body** matches regex      | `None`         |
-| `--exclude-regex`  | Drop responses whose **body** matches regex             | `None`         |
-| `--mode`           | Select built-in wordlist: `fast`, `balanced`, `stealth` | `balanced`     |
+  ---------------------------------------------------------------------------
+  Flag                Description                      Default
+  ------------------- -------------------------------- ----------------------
+  `-w, --wordlist`    Path to custom wordlist          auto by mode
+                      (overrides --mode)               
 
-> **Note:** `--wordlist` always takes precedence over `--mode`.
+  `-t, --threads`     Worker threads                   30
 
----
+  `--delay`           Delay (seconds) between requests 0.1
+
+  `--profile`         Traffic profile: stealth,        balanced
+                      balanced, aggressive             
+
+  `--recursion`       Enable recursive scanning        False
+
+  `--include-regex`   Only accept responses matching   None
+                      regex                            
+
+  `--exclude-regex`   Drop responses matching regex    None
+
+  `--mode`            Select built-in wordlist: fast,  balanced
+                      balanced, stealth                
+  ---------------------------------------------------------------------------
+
+------------------------------------------------------------------------
 
 ## 📚 Scan Modes → Wordlists
 
-Built-in mapping used in `main.py`:
+  -------------------------------------------------------------------------
+  Mode           Wordlist                 Intended Use
+  -------------- ------------------------ ---------------------------------
+  fast           `wordlists/common.txt`   Quick recon / triage
 
-| Mode       | Wordlist               | Intended Use                             |
-| ---------- | ---------------------- | ---------------------------------------- |
-| `fast`     | `wordlists/common.txt` | Quick recon / triage                     |
-| `balanced` | `wordlists/medium.txt`  | Deeper target coverage                   |
-| `stealth`  | `wordlists/large.txt` | Small, low-noise set for fragile targets |
+  balanced       `wordlists/medium.txt`   Deeper target coverage
 
----
+  stealth        `wordlists/large.txt`    Low-noise scans for fragile
+                                          targets
+  -------------------------------------------------------------------------
 
-## 🧵 Profiles vs. Performance
+------------------------------------------------------------------------
 
-`profile` affects thread cap & minimum delay:
+## 🧵 Profiles vs. Performance
 
-| Profile      | Max Threads Used        | Min Delay Applied | Notes                                             |
-| ------------ | ----------------------- | ----------------- | ------------------------------------------------- |
-| `stealth`    | min(user\_threads, 10)  | ≥ 1.5s            | Low & slow; try on fragile / rate-limited targets |
-| `balanced`   | user\_threads           | user\_delay       | Good default                                      |
-| `aggressive` | max(user\_threads, 100) | ≥ 0.01s           | Go brrrr; be careful!                             |
+  Profile      Max Threads Used         Min Delay Applied   Notes
+  ------------ ------------------------ ------------------- ---------------
+  stealth      min(user_threads, 10)    ≥ 1.5s              Low & slow
+  balanced     user_threads             user_delay          Default
+  aggressive   max(user_threads, 100)   ≥ 0.01s             Very noisy ⚠️
 
----
+------------------------------------------------------------------------
 
 ## 🕵️ Discovery Logic
 
-For each word in the wordlist (`path`), PathHunter probes:
+For each word in the wordlist:
 
-* `path/`
-* `path.<ext>` for each extension (defaults include: php, html, bak, txt, zip, asp, aspx)
+-   `path/`\
+-   `path.<ext>` for common extensions
+    (`php, html, bak, txt, zip, asp, aspx`)
 
-Responses whose status codes are in the **status filter** (`[200, 403, 401]` by default) and pass regex filters are logged & shown in the UI. You can customize extensions at construction time if you wire it through CLI (roadmap).
+Responses with interesting status codes (`200, 403, 401`) that pass
+regex filters are logged.\
+If a directory is discovered (`/`), recursion can queue deeper scanning.
 
-If a directory is discovered (trailing slash) and recursion is enabled, it’s queued for deeper scanning.
-
----
+------------------------------------------------------------------------
 
 ## 🔐 403/401 Bypass Attempts
 
-When a response is *Forbidden* or *Unauthorized*, PathHunter will try:
+On **Forbidden/Unauthorized responses**, PathHunter will try:
 
-* Suffix fuzz (`/.`, `//`, encoded slash, `..;/`, `;/`)
-* Common header tricks (`X-Original-URL`, `X-Rewrite-URL`, `X-Forwarded-For`, etc.)
+-   Suffix fuzzing: `/.`, `//`, encoded slash, `..;/`, `;/`\
+-   Header tricks: `X-Original-URL`, `X-Rewrite-URL`, `X-Forwarded-For`,
+    etc.
 
-Successful bypasses are logged and shown in the results table as **Bypass Success** or **Header Bypass**.
+Successful bypasses are shown as **Bypass Success** or **Header
+Bypass**.
 
----
+------------------------------------------------------------------------
 
 ## 📊 Output & Reporting
 
-After scan completion (or graceful interrupt), results are written to:
+-   Results saved as `scan_results.json` by default\
+-   CSV support planned via CLI flag
 
-* `scan_results.json` (default)
-* CSV supported via internal call (future CLI flag)
+Example JSON:
 
-**JSON schema example:**
-
-```json
+``` json
 [
   {
     "url": "https://target.tld/admin/",
@@ -215,128 +230,131 @@ After scan completion (or graceful interrupt), results are written to:
 ]
 ```
 
----
+------------------------------------------------------------------------
 
 ## 🧪 Example Runs
 
-Fast mode, exclude anything with `logout` in body:
+**Fast mode, exclude `logout`:**
 
-```bash
+``` bash
 python main.py https://target.tld --mode fast --exclude-regex logout
 ```
 
-Balanced mode, recursive:
+**Balanced mode, recursive:**
 
-```bash
+``` bash
 python main.py https://target.tld --mode balanced --recursion
 ```
 
-Aggressive profile + custom wordlist:
+**Aggressive + custom wordlist:**
 
-```bash
+``` bash
 python main.py https://target.tld -w lists/bb-elite.txt --profile aggressive --threads 200 --delay 0.01
 ```
 
----
+------------------------------------------------------------------------
 
 ## 🧰 Development Setup
 
-Install in editable mode for hacking:
-
-```bash
+``` bash
 git clone https://github.com/<YOUR_GITHUB_USERNAME>/pathhunter.git
 cd pathhunter
 python -m venv .venv
-source .venv/bin/activate  # or .venv\Scripts\activate on Windows
+source .venv/bin/activate  # or .venv\Scriptsctivate on Windows
 pip install -r requirements.txt
 ```
 
-Run in debug mode with verbose logging (add your own flags if extending logger):
+Run in debug mode:
 
-```bash
+``` bash
 python main.py https://localhost:8443 --mode fast
 ```
 
----
+------------------------------------------------------------------------
 
 ## 🧱 Project Layout
 
-```
-pathhunter/
-├── main.py                  # CLI entrypoint
-├── modules/
-│   ├── __init__.py
-│   └── content_discover.py  # Scanning engine + Rich UI
-├── utils/
-│   ├── __init__.py
-│   ├── context.py           # ScanContext (target, results store, SSL prefs)
-│   └── logger.py            # Minimal logger helpers
-├── wordlists/
-│   ├── common.txt           # Fast list
-│   ├── medium.txt            # Balanced/full list
-│   └── large.txt           # Big/stealthy list
-├── requirements.txt
-├── LICENSE
-└── README.md
-```
+    pathhunter/
+    ├── main.py                  # CLI entrypoint
+    ├── modules/
+    │   ├── __init__.py
+    │   └── content_discover.py  # Scanning engine + Rich UI
+    ├── utils/
+    │   ├── __init__.py
+    │   ├── context.py           # ScanContext (target, results store, SSL prefs)
+    │   └── logger.py            # Minimal logger helpers
+    ├── wordlists/
+    │   ├── common.txt           # Fast list
+    │   ├── medium.txt           # Balanced/full list
+    │   └── large.txt            # Big/stealthy list
+    ├── requirements.txt
+    ├── LICENSE
+    └── README.md
 
----
+------------------------------------------------------------------------
 
 ## 🧭 Roadmap
 
-* [ ] CLI flag for custom extensions (`--extensions php,asp,aspx`)
-* [ ] Built-in extension presets (`--common-extensions`)
-* [ ] Proxy support exposed via CLI
-* [ ] Per-host rate shaping / jitter curves
-* [ ] Resume from partial scans (state file)
-* [ ] Output filtering by status class (2xx only, etc.)
-* [ ] HTML report export w/ risk ranking
-* [ ] CI pipeline + tests
+-   CLI flag for custom extensions (`--extensions php,asp,aspx`)\
+-   Built-in extension presets (`--common-extensions`)\
+-   Proxy support via CLI\
+-   Per-host rate shaping & jitter curves\
+-   Resume from partial scans (state file)\
+-   Output filtering (e.g., 2xx only)\
+-   HTML report export with risk ranking\
+-   CI pipeline + tests
 
----
+------------------------------------------------------------------------
 
 ## 🤝 Contributing
 
-Contributions welcome! Please:
+Contributions welcome!
 
-1. Fork the repo
-2. Create a feature branch: `git checkout -b feature/your-idea`
-3. Run lint + basic tests (coming soon)
-4. Submit a PR with a clear description & sample output
+1.  Fork the repo\
 
-Bug report? Open an issue with:
+2.  Create a feature branch:
 
-* Target type (public, test lab, localhost)
-* Command used
-* Python version & OS
-* Stack trace or weird output screenshot
+    ``` bash
+    git checkout -b feature/your-idea
+    ```
 
----
+3.  Run lint/tests (coming soon)\
+
+4.  Submit a PR with a clear description & sample output
+
+Bug report? Open an issue with:\
+- Target type (public, lab, localhost)\
+- Command used\
+- Python version & OS\
+- Stack trace / screenshot
+
+------------------------------------------------------------------------
 
 ## ⚠️ Legal & Ethical Use
 
-**Use PathHunter only on systems you own or have explicit permission to test.** Unauthorized scanning may be illegal.
+Use **PathHunter** only on systems you own or have explicit permission
+to test.\
+Unauthorized scanning may be illegal.
 
-The authors assume **no liability** for misuse.
+The authors assume **no liability for misuse**.
 
----
+------------------------------------------------------------------------
 
 ## 📄 License
 
-This project is licensed under the **MIT License**. See [LICENSE](LICENSE).
+This project is licensed under the **MIT License**. See
+[LICENSE](LICENSE).
 
----
+------------------------------------------------------------------------
 
 ## 🙌 Credits
 
-* Inspired by: Feroxbuster, Dirsearch, Gobuster
-* Rich TUI powered by: [Textualize Rich](https://github.com/Textualize/rich)
-* HTTP by: `requests`
+-   Inspired by: **Feroxbuster, Dirsearch, Gobuster**\
+-   TUI powered by: **Rich (Textualize)**\
+-   HTTP by: **requests**
 
----
+------------------------------------------------------------------------
 
-### ⭐ If you find PathHunter useful, star the repo! It helps others discover it.
-
----
-
-**Happy Hunting!** 🔥
+⭐ If you find PathHunter useful, **star the repo** to help others
+discover it.\
+🔥 Happy Hunting!
